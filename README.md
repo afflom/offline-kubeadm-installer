@@ -2,11 +2,11 @@
 
 ## Purpose
 
-This creates a kubeadm 1.18 bundle that can be used to install kubeadm on an airgapped system.
+This creates a kubeadm 1.18 bundle that can be used to install kubeadm on an offline system.
 
 ## Prereqs
 
-create-export-pack.sh must be run on a centos/rhel machine that already has kubeadm installed and running.
+create-export-pack.sh must be run on a centos 7 machine that already has kubeadm installed and running.
 
 The airgapped system must have all of the Centos Repos (inlcuding extras) enabled.
 
@@ -22,7 +22,3 @@ On the target system:
 ```
 bash selfextract.bsx
 ```
-
-# Todo
-
-1. Turn this into a pipeline that spools up a VM and automatically pulls the kubeadm container images
