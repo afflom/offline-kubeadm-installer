@@ -2,17 +2,15 @@
 
 ## Purpose
 
-This creates a kubeadm 1.18 bundle that can be used to install kubeadm on an offline system.
+This creates a kubeadm/docker bundle that can be used to install kubeadm and docker (with dependencies) on an offline system.
 
-## Prereqs
+## Releases
 
-create-export-pack.sh must be run on a centos 7 machine that already has kubeadm installed and running.
-
-The airgapped system must have all of the Centos Repos (inlcuding extras) enabled.
+Releases track with their latest respective stable and compatable versions, but are published with each release of kubernetes.
 
 
 ## Usage
-From an internete connected kubeadm machine:
+From an internet connected machine:
 ```
 bash create-export-pack.sh
 ```
