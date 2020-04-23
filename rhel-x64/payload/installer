@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# Get reference directory
+directory=$(pwd)
+
+# Create Kubernetes firewall rules
+firewall-cmd --zone=public --add-port=6443/tcp --permanent
+firewall-cmd --zone=public --add-port=10250/tcp --permanent
+firewall-cmd --reload
+
+# Set iptables to see bridged traffic
+
+cat <<EOF > /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+sysctl --system
+
+# Disable SELinux for install
+setenforce 0
+sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
+
+# Install docker
+yum install -y device-mapper-persistent-data lvm2
+yum install -y $directory/kubernetes-bundle/packages/*containerd*.rpm $directory/kubernetes-bundle/packages/*docker*.rpm
+
+## Create /etc/docker directory.
+mkdir /etc/docker
+
+# Setup daemon.
+cat > /etc/docker/daemon.json <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2",
+  "storage-opts": [
+    "overlay2.override_kernel_check=true"
+  ]
+}
+EOF
+
+mkdir -p /etc/systemd/system/docker.service.d
+
+# Start Docker
+systemctl enable docker
+systemctl start docker
+
+# Load container images
+docker load -i $directory/kubernetes-bundle/images/allinone.tar
+
+# Retag images
+while IFS="" read -r p || [ -n "$p" ]
+do
+  docker tag $(echo $p | grep -o '\S*$') $(echo $p | grep -o '^\S*')
+done < $directory/kubernetes-bundle/images/allinone.list
+
+# Install kubernetes packages
+
+yum install -y $directory/kubernetes-bundle/packages/*kubelet*.rpm $directory/kubernetes-bundle/packages/*kubectl*.rpm $directory/kubernetes-bundle/packages/*cri-tools*.rpm $directory/kubernetes-bundle/packages/*kubeadm*.rpm $directory/kubernetes-bundle/packages/*kubernetes-cni*.rpm
+
+systemctl enable kubelet
+systemctl start kubelet
+
+mkdir /root/templates
+cp $directory/kubernetes-bundle/templates/* /root/templates
+
+
