@@ -4,7 +4,12 @@ cd payload
 
 # Get directory for easy reference
 directory=$(pwd)
-# I just like wget
+
+yum install -y yum-utils wget
+yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+# I just like wget - sue me
 yum install wget -y
 
 # Create subdirectories
@@ -13,11 +18,6 @@ mkdir kubernetes-bundle/images
 mkdir kubernetes-bundle/packages
 mkdir kubernetes-bundle/templates
 
-# Save image name, tag, and hash to file
-docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | sed 's/\:<none>//g' > $directory/kubernetes-bundle/images/allinone.list
-
-# Save images to tar
-docker save $(docker images --format '{{.Repository}}:{{.Tag}}' | sed 's/\:<none>//g') -o $directory/kubernetes-bundle/images/allinone.tar
 
 # Download kubernetes packages
 wget -P $directory/kubernetes-bundle/packages/ https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64/Packages/14bfe6e75a9efc8eca3f638eb22c7e2ce759c67f95b43b16fae4ebabde1549f3-cri-tools-1.13.0-0.x86_64.rpm
@@ -34,6 +34,13 @@ wget -P $directory/kubernetes-bundle/packages/ https://download.docker.com/linux
 
 # Download weavenet config
 wget -P $directory/kubernetes-bundle/templates/ https://cloud.weave.works/k8s/v1.16/net.yaml
+
+# Save image name, tag, and hash to file
+docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' | sed 's/\:<none>//g' > $directory/kubernetes-bundle/images/allinone.list
+
+# Save images to tar
+docker save $(docker images --format '{{.Repository}}:{{.Tag}}' | sed 's/\:<none>//g') -o $directory/kubernetes-bundle/images/allinone.tar
+
 
 tar cf ../payload.tar ./*
 cd ..
