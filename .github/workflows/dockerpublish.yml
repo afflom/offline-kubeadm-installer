@@ -20,29 +20,36 @@ env:
 jobs:
   # Run tests.
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/
-  test-rhel:
+  build-rhel:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
-
-      - name: Run tests
+      - name: build-rhel
         run: |
             export DOCKER_BUILDKIT=1
             cd rhel-x64
-            mkdir out
             docker build -o - . > rhel.tar
-            ls
-  test-deb:
-    runs-on: ubuntu-latest        
+            tar xvf rhel.tar
+      - uses: actions/upload-artifact@v1
+      - name: upload-rhel
+            with:
+              name: rhel.bsx
+              path: selfextract.bsx
+  build-deb:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      - name: Run tests
+      - name: build-deb
         run: |
-
+            export DOCKER_BUILDKIT=1
             cd debian-x64
-            docker build -o deb .
+            docker build -o - . > deb.tar
+            tar xvf deb.tar
+      - uses: actions/upload-artifact@v1
+      - name: upload-deb
+            with:
+              name: deb.bsx
+              path: selfextract.bsx
   # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
 #  push:
