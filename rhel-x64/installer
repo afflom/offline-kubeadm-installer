@@ -16,13 +16,9 @@ net.bridge.bridge-nf-call-iptables = 1
 EOF
 sysctl --system
 
-# Disable SELinux for install
-setenforce 0
-sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
-
 # Install docker
 yum install -y device-mapper-persistent-data lvm2
-yum install -y $directory/kubernetes-bundle/packages/*containerd*.rpm $directory/kubernetes-bundle/packages/*docker*.rpm
+yum install -y $directory/packages/*.rpm
 
 ## Create /etc/docker directory.
 mkdir /etc/docker
@@ -49,13 +45,7 @@ systemctl enable docker
 systemctl start docker
 
 # Load container images
-docker load -i $directory/kubernetes-bundle/images/allinone.tar
-
-# Retag images
-while IFS="" read -r p || [ -n "$p" ]
-do
-  docker tag $(echo $p | grep -o '\S*$') $(echo $p | grep -o '^\S*')
-done < $directory/kubernetes-bundle/images/allinone.list
+for f in $directory/images/*; do docker load -i $directory/images/$f;
 
 # Install kubernetes packages
 
