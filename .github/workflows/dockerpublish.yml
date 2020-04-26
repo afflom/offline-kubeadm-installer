@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: rhel.tar
-          path: rhel.tar
+          path: rhel-x64/rhel.tar
   build-deb:
     runs-on: ubuntu-latest
     steps:
@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: deb.tar
-          path: deb.tar
+          path: debian-x64/deb.tar
   # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
 #  push:
