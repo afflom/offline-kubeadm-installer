@@ -29,7 +29,7 @@ jobs:
             export DOCKER_BUILDKIT=1
             cd rhel-x64
             docker build -o - . > rhel.tar
-            tar xvf rhel.tar
+            tar -xvf rhel.tar
       - name: upload-rhel
         uses: actions/upload-artifact@v1
         with:
@@ -44,7 +44,7 @@ jobs:
             export DOCKER_BUILDKIT=1
             cd debian-x64
             docker build -o - . > deb.tar
-            tar xvf deb.tar
+            tar -xvf deb.tar
       - name: upload-deb
         uses: actions/upload-artifact@v1
         with:
