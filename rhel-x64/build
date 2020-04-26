@@ -1,4 +1,5 @@
 #!/bin/bash
+cd payload
 tar cf ../payload.tar ./*
 cd ..
 
