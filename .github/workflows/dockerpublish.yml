@@ -28,12 +28,12 @@ jobs:
         run: |
             export DOCKER_BUILDKIT=1
             cd rhel-x64
-            docker build -o - . > rhel.tar
+            docker build -o rhel .
       - name: upload-rhel
         uses: actions/upload-artifact@v1
         with:
-          name: rhel.tar
-          path: rhel-x64/rhel.tar
+          name: rhel
+          path: rhel-x64/rhel/selfextract.bsx
   build-deb:
     runs-on: ubuntu-latest
     steps:

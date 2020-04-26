@@ -34,5 +34,5 @@ RUN curl https://cloud.weave.works/k8s/v1.16/net.yaml -o payload/manifests/weave
 # Build it
 RUN bash build
 
-FROM centos:centos7.7.1908 AS export-stage
+FROM scratch AS export-stage
 COPY --from=build-stage /build/selfextract.bsx /
