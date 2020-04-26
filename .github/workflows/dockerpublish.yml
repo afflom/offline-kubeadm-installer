@@ -29,12 +29,11 @@ jobs:
             export DOCKER_BUILDKIT=1
             cd rhel-x64
             docker build -o - . > rhel.tar
-            tar -xvf rhel.tar
       - name: upload-rhel
         uses: actions/upload-artifact@v1
         with:
-          name: rhel.bsx
-          path: selfextract.bsx
+          name: rhel.tar
+          path: rhel.tar
   build-deb:
     runs-on: ubuntu-latest
     steps:
@@ -44,12 +43,11 @@ jobs:
             export DOCKER_BUILDKIT=1
             cd debian-x64
             docker build -o - . > deb.tar
-            tar -xvf deb.tar
       - name: upload-deb
         uses: actions/upload-artifact@v1
         with:
-          name: deb.bsx
-          path: selfextract.bsx
+          name: deb.tar
+          path: deb.tar
   # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
 #  push:
