@@ -28,9 +28,11 @@ Additionally, the installer will output a weave-net manifest to the directory fr
 Releases track with their latest respective stable and compatable versions, but are published with each release of kubernetes. Check the release notes for the major component versions.
 
 
-## Usage
+## Usage  
+**\*As of now, you must disable SElinux to install/run kubeadm** 
 1. Download the latest release and copy it to the target system
-**As of now, you must disable SElinux to install/run kubeadm**
+
+ 
 2. Disable SElinux
 ```
      setenforce 0
