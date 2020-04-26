@@ -30,7 +30,8 @@ jobs:
         run: |
             export DOCKER_BUILDKIT=1
             cd rhel-x64
-            docker build -o - . > rhel.tar
+            mkdir out
+            docker build -o out .
   test-deb:
     runs-on: ubuntu-latest        
     steps:
