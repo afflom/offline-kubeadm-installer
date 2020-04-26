@@ -31,7 +31,6 @@ jobs:
             export DOCKER_BUILDKIT=1
             cd rhel-x64
             docker build -o rhel .
-            ls rhel
   test-deb:
     runs-on: ubuntu-latest        
     steps:
@@ -42,7 +41,6 @@ jobs:
 
             cd debian-x64
             docker build -o deb .
-            ls deb
   # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
 #  push:
