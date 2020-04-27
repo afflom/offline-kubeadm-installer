@@ -9,7 +9,7 @@ Offline installs of kubeadm are tedious. This installer aims to simplify the pro
 
 This install pack can be used to create single node clusters or multi-node clusters in any configuration. The installation is considered minimal and only configures the installation target as required for a single node installation, as per [the official install guide](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm). 
 
-This installer will install an the following components and their dependencies on the target system:
+This installer will install the following components and their dependencies on the target system:
 
 docker-ce  
 containerd.io  
@@ -29,11 +29,11 @@ Releases track with their latest respective stable and compatable versions, but 
 
 
 ## Usage  
-**\*As of now, you must disable SElinux to install/run kubeadm** 
+**\*As of now, on rhel systems, you must disable [SElinux to install/run kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#k8s-install-1)** 
 1. Download the latest release and copy it to the target system
 
  
-2. Disable SElinux
+2. on RHEL systems, Disable SElinux
 ```
      setenforce 0
      sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
