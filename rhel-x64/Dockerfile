@@ -26,7 +26,7 @@ RUN skopeo copy docker://docker.io/weaveworks/weave-kube:2.6.2 docker-archive:pa
 RUN skopeo copy docker://docker.io/weaveworks/weave-npc:2.6.2 docker-archive:payload/images/weave-npc.tar
 
 # Pull yum packages
-RUN yum install --downloadonly --downloaddir=payload/packages/ docker-ce containerd.io docker-cli kubeadm kubectl kubelet
+RUN yum install --downloadonly --downloaddir=payload/packages/ docker-ce containerd.io docker-cli kubeadm kubectl kubelet device-mapper-persistent-data lvm2
 
 # Pull the weave-net manifest
 RUN curl https://cloud.weave.works/k8s/v1.16/net.yaml -o payload/manifests/weave-net.yaml

@@ -21,7 +21,7 @@ RUN skopeo copy docker://docker.io/weaveworks/weave-npc:2.6.2 docker-archive:pay
 
 
 # Build the binary
-FROM ubuntu AS build-stage
+FROM ubuntu:xenial AS build-stage
 
 RUN mkdir -p /build/payload/{images,manifests,packages}
 WORKDIR /build
@@ -33,13 +33,15 @@ COPY build .
 COPY --from=pull-stage /build/payload/images/* payload/images/
 
 # Setup Repos and prepare dependency downloads
-RUN sudo apt-get update && sudo apt-get install -y apt-transport-https curl
-RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+RUN apt-get update && apt-get install -y apt-transport-https ca-certificates curl software-properties-common gnupg2
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 RUN echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
-
+RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+RUN apt-get update -y
 # Pull yum packages
-RUN yum install --downloadonly --downloaddir=payload/packages/ docker-ce containerd.io docker-cli kubeadm kubectl kubelet
-
+RUN apt-get install -y --download-only  docker-ce=5:19.03.8~3-0~ubuntu-$(lsb_release -cs) containerd.io=1.2.13-1 docker-ce-cli=5:19.03.8~3-0~ubuntu-$(lsb_release -cs) kubeadm kubectl kubelet
+RUN cp /var/cache/apt/archives/*.deb payload/packages/
 # Pull the weave-net manifest
 RUN curl https://cloud.weave.works/k8s/v1.16/net.yaml -o payload/manifests/weave-net.yaml
 

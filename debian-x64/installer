@@ -4,9 +4,9 @@
 directory=$(pwd)
 
 # Create Kubernetes firewall rules
-firewall-cmd --zone=public --add-port=6443/tcp --permanent
-firewall-cmd --zone=public --add-port=10250/tcp --permanent
-firewall-cmd --reload
+ufw allow 6443/tcp
+ufw allow 10250/tcp
+
 
 # Set iptables to see bridged traffic
 
@@ -16,13 +16,8 @@ net.bridge.bridge-nf-call-iptables = 1
 EOF
 sysctl --system
 
-# Disable SELinux for install
-setenforce 0
-sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
-
 # Install docker
-yum install -y device-mapper-persistent-data lvm2
-yum install -y $directory/kubernetes-bundle/packages/*containerd*.rpm $directory/kubernetes-bundle/packages/*docker*.rpm
+dpkg -i $directory/packages/*.deb
 
 ## Create /etc/docker directory.
 mkdir /etc/docker
@@ -49,21 +44,14 @@ systemctl enable docker
 systemctl start docker
 
 # Load container images
-docker load -i $directory/kubernetes-bundle/images/allinone.tar
+for f in $directory/images/*; do docker load -i $directory/images/$f;
 
-# Retag images
-while IFS="" read -r p || [ -n "$p" ]
-do
-  docker tag $(echo $p | grep -o '\S*$') $(echo $p | grep -o '^\S*')
-done < $directory/kubernetes-bundle/images/allinone.list
-
-# Install kubernetes packages
-
-yum install -y $directory/kubernetes-bundle/packages/*kubelet*.rpm $directory/kubernetes-bundle/packages/*kubectl*.rpm $directory/kubernetes-bundle/packages/*cri-tools*.rpm $directory/kubernetes-bundle/packages/*kubeadm*.rpm $directory/kubernetes-bundle/packages/*kubernetes-cni*.rpm
+# Start Kubelet
 
 systemctl enable kubelet
 systemctl start kubelet
 
+# Make weave-net available
 mkdir /root/templates
 cp $directory/kubernetes-bundle/templates/* /root/templates
 

@@ -16,8 +16,7 @@ net.bridge.bridge-nf-call-iptables = 1
 EOF
 sysctl --system
 
-# Install docker
-yum install -y device-mapper-persistent-data lvm2
+# Install packages
 yum install -y $directory/packages/*.rpm
 
 ## Create /etc/docker directory.
@@ -47,13 +46,11 @@ systemctl start docker
 # Load container images
 for f in $directory/images/*; do docker load -i $directory/images/$f;
 
-# Install kubernetes packages
-
-yum install -y $directory/kubernetes-bundle/packages/*kubelet*.rpm $directory/kubernetes-bundle/packages/*kubectl*.rpm $directory/kubernetes-bundle/packages/*cri-tools*.rpm $directory/kubernetes-bundle/packages/*kubeadm*.rpm $directory/kubernetes-bundle/packages/*kubernetes-cni*.rpm
-
+# Start Kubelet
 systemctl enable kubelet
 systemctl start kubelet
 
+# Make weave-net available
 mkdir /root/templates
 cp $directory/kubernetes-bundle/templates/* /root/templates
 
