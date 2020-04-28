@@ -40,7 +40,7 @@ RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubunt
 RUN apt-get update -y
 # Pull yum packages
 RUN apt-get install -y --download-only  docker-ce=5:19.03.8~3-0~ubuntu-$(lsb_release -cs) containerd.io=1.2.13-1 docker-ce-cli=5:19.03.8~3-0~ubuntu-$(lsb_release -cs) kubeadm kubectl kubelet
-RUN cp /var/cache/apt/archives/*.deb /payload/packages/
+RUN cp /var/cache/apt/archives/*.deb /build/payload/packages/
 # Pull the weave-net manifest
 RUN curl https://cloud.weave.works/k8s/v1.16/net.yaml -o payload/manifests/weave-net.yaml
 
