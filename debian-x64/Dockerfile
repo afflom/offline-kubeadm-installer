@@ -22,7 +22,7 @@ RUN skopeo copy docker://docker.io/weaveworks/weave-npc:2.6.2 docker-archive:pay
 
 # Build the binary
 FROM ubuntu:xenial AS build-stage
-
+COPY --from=pull-stage /build/payload/images/* /build/payload/images/
 RUN mkdir -p /build/payload/{images,manifests,packages}
 WORKDIR /build
 
@@ -30,7 +30,6 @@ WORKDIR /build
 COPY installer payload/
 COPY decompress .
 COPY build .
-COPY --from=pull-stage /build/payload/images/* payload/images/
 
 # Setup Repos and prepare dependency downloads
 RUN apt-get update && apt-get install -y apt-transport-https ca-certificates curl software-properties-common gnupg2
