@@ -6,18 +6,13 @@ RUN mkdir -p /build/payload/images
 WORKDIR /build
 
 # Setup Repos and prepare dependency downloads
-RUN yum install -y skopeo
+COPY kubernetes.repo /etc/yum.repos.d/
+RUN yum install -y podman kubeadm
 
-# Pull kubeadm + weave-net
-RUN skopeo copy docker://k8s.gcr.io/coredns:1.6.7 docker-archive:payload/images/coredns.tar
-RUN skopeo copy docker://k8s.gcr.io/kube-apiserver:v1.18.2 docker-archive:payload/images/kube-apiserver.tar
-RUN skopeo copy docker://k8s.gcr.io/kube-controller-manager:v1.18.2 docker-archive:payload/images/controller-manager.tar
-RUN skopeo copy docker://k8s.gcr.io/kube-scheduler:v1.18.2 docker-archive:payload/images/kube-scheduler.tar
-RUN skopeo copy docker://k8s.gcr.io/kube-proxy:v1.18.2 docker-archive:payload/images/kube-proxy.tar
-RUN skopeo copy docker://k8s.gcr.io/pause:3.2 docker-archive:payload/images/pause.tar
-RUN skopeo copy docker://k8s.gcr.io/etcd:3.4.3-0 docker-archive:payload/images/etcd.tar
-RUN skopeo copy docker://docker.io/weaveworks/weave-kube:2.6.2 docker-archive:payload/images/weave-kube.tar
-RUN skopeo copy docker://docker.io/weaveworks/weave-npc:2.6.2 docker-archive:payload/images/weave-npc.tar
+RUN for c in $(kubeadm config images list); do podman pull $c && \
+      podman save $_ > payload/images/$(date +%s).tar && \
+      echo $(podman images --format '{{.Repository}}:{{.Tag}} {{.ID}}' $c) >> payload/images/container.list; \
+      done
 
 
 # Build the binary

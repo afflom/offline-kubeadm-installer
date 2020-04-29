@@ -44,7 +44,12 @@ systemctl enable docker
 systemctl start docker
 
 # Load container images
-for f in $directory/images/*; do docker load -i $directory/images/$f;
+for f in $directory/images/*; do docker load -i $f; done
+
+while IFS="" read -r p || [ -n "$p" ]
+do
+  docker tag $(echo $p | grep -o '\S*$') $(echo $p | grep -o '^\S*')
+done < $directory/images/container.list
 
 # Start Kubelet
 
