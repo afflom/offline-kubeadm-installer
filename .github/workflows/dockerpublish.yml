@@ -28,6 +28,11 @@ jobs:
         run: |
             export DOCKER_BUILDKIT=1
             cd rhel-x64
+            mkdir images
+            for c in $(cat image.list); do docker pull $c && \
+             docker save $_ > images/$(date +%s).tar && \
+             echo $(docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' $c) >> images/container.list; \
+            done
             docker build -o rhel .
       - name: upload-rhel
         uses: actions/upload-artifact@v1
@@ -42,6 +47,11 @@ jobs:
         run: |
             export DOCKER_BUILDKIT=1
             cd debian-x64
+            mkdir images
+            for c in $(cat image.list); do docker pull $c && \
+             docker save $_ > images/$(date +%s).tar && \
+             echo $(docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' $c) >> images/container.list; \
+            done
             docker build -o deb .
       - name: upload-deb
         uses: actions/upload-artifact@v1

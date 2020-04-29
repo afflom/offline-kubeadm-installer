@@ -1,21 +1,3 @@
-# Pull the images
-FROM centos:centos7.7.1908 AS pull-stage
-
-# Setup Directories and stage scripts
-RUN mkdir -p /build/payload/images
-WORKDIR /build
-
-# Setup Repos and prepare dependency downloads
-COPY kubernetes.repo /etc/yum.repos.d/
-COPY image.list .
-RUN yum install -y podman kubeadm
-
-RUN for c in $(cat image.list); do podman pull $c && \
-      podman save $_ > payload/images/$(date +%s).tar && \
-      echo $(podman images --format '{{.Repository}}:{{.Tag}} {{.ID}}' $c) >> payload/images/container.list; \
-      done
-
-
 # Build the binary
 FROM ubuntu:xenial AS build-stage
 RUN mkdir -p /build/payload/images
@@ -24,7 +6,7 @@ RUN mkdir /build/payload/manifests
 WORKDIR /build
 
 # Copy in images
-COPY --from=pull-stage /build/payload/images/* /build/payload/images/
+COPY images/* /build/payload/images/
 
 # Copy in binary scripts
 COPY installer payload/
