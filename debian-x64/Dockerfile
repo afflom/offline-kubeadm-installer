@@ -7,9 +7,10 @@ WORKDIR /build
 
 # Setup Repos and prepare dependency downloads
 COPY kubernetes.repo /etc/yum.repos.d/
+COPY image.list .
 RUN yum install -y podman kubeadm
 
-RUN for c in $(kubeadm config images list); do podman pull $c && \
+RUN for c in $(cat image.list); do podman pull $c && \
       podman save $_ > payload/images/$(date +%s).tar && \
       echo $(podman images --format '{{.Repository}}:{{.Tag}} {{.ID}}' $c) >> payload/images/container.list; \
       done
