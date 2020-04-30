@@ -41,7 +41,12 @@ Releases track with their latest respective stable and compatable versions, but 
 3. Install the bundle
 ```
      chmod +x ./<bundle_name>.bsx
-     sudo ./<bundle_name>.bsx
+     sudo ./<bundle_name>.bsx install
+```
+### Alternatively you can extract the bundle:
+```
+     chmod +x ./<bundle_name>.bsx
+     sudo ./<bundle_name>.bsx extract
 ```
 
 ## Follow-on tasks

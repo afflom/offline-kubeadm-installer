@@ -30,8 +30,7 @@ jobs:
             cd rhel-x64
             mkdir images
             for c in $(cat image.list); do docker pull $c && \
-             docker save $_ > images/$(date +%s).tar && \
-             echo $(docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' $c) >> images/container.list; \
+             docker save $_ > images/$(date +%s).tar; \
             done
             docker build -o rhel .
       - name: upload-rhel
@@ -49,8 +48,7 @@ jobs:
             cd debian-x64
             mkdir images
             for c in $(cat image.list); do docker pull $c && \
-             docker save $_ > images/$(date +%s).tar && \
-             echo $(docker images --format '{{.Repository}}:{{.Tag}} {{.ID}}' $c) >> images/container.list; \
+             docker save $_ > images/$(date +%s).tar; \
             done
             docker build -o deb .
       - name: upload-deb
