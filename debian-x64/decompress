@@ -1,22 +1,38 @@
 #!/bin/bash
-echo ""
-echo "Self Extracting Installer"
-echo ""
+function install {
+  echo ""
+  echo "Self Extracting Installer"
+  echo ""
 
-export TMPDIR=`mktemp -d ./selfextract.XXXXXX`
+  export TMPDIR=`mktemp -d ./selfextract.XXXXXX`
 
-ARCHIVE=`awk '/^__ARCHIVE_BELOW__/ {print NR + 1; exit 0; }' $0`
+  ARCHIVE=`awk '/^__ARCHIVE_BELOW__/ {print NR + 1; exit 0; }' $0`
 
-tail -n+$ARCHIVE $0 | tar xzv -C $TMPDIR
+  tail -n+$ARCHIVE $0 | tar xzv -C $TMPDIR
 
-CDIR=`pwd`
-cd $TMPDIR
-chmod +x installer
-./installer
+  CDIR=`pwd`
+  cd $TMPDIR
+  chmod +x installer
+  ./installer
 
-cd $CDIR
-rm -rf $TMPDIR
+  cd $CDIR
+  rm -rf $TMPDIR
 
-exit 0
+  exit 0
+}
 
-__ARCHIVE_BELOW__ 
+function extract {
+  echo ""
+  echo "Extracting..."
+  echo ""
+
+  export EXTRACT=`mkdir -d ./kubeadm-omnibus`
+
+  ARCHIVE=`awk '/^__ARCHIVE_BELOW__/ {print NR + 1; exit 0; }' $0`
+
+  tail -n+$ARCHIVE $0 | tar xzv -C $EXTRACT
+
+  exit 0
+}
+
+__ARCHIVE_BELOW__  

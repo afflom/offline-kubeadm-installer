@@ -46,18 +46,13 @@ systemctl start docker
 # Load container images
 for f in $directory/images/*; do docker load -i $f; done
 
-while IFS="" read -r p || [ -n "$p" ]
-do
-  docker tag $(echo $p | grep -o '\S*$') $(echo $p | grep -o '^\S*')
-done < $directory/images/container.list
-
 # Start Kubelet
 
 systemctl enable kubelet
 systemctl start kubelet
 
 # Make weave-net available
-mkdir /root/templates
-cp $directory/kubernetes-bundle/templates/* /root/templates
+mkdir /root/manifests
+cp $directory/manifests/* /root/manifests/
 
 
