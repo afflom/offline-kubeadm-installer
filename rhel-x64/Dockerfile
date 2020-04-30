@@ -12,11 +12,11 @@ COPY images/* /build/payload/images
 
 # Setup Repos and prepare dependency downloads
 COPY kubernetes.repo /etc/yum.repos.d/
-RUN yum install -y epel-release yum-utils podman kubeadm
+RUN yum install -y epel-release yum-utils
 RUN yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 
 # Pull yum packages
-RUN yum install --downloadonly --downloaddir=payload/packages/ docker-ce containerd.io docker-cli kubeadm kubectl kubelet device-mapper-persistent-data lvm2
+RUN yum install --downloadonly --downloaddir=payload/packages/ docker-ce containerd.io docker-cli kubeadm kubectl kubelet device-mapper-persistent-data lvm2 container-selinux
 
 # Pull the weave-net manifest
 RUN curl https://cloud.weave.works/k8s/v1.16/net.yaml -o payload/manifests/weave-net.yaml

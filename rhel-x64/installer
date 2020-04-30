@@ -57,6 +57,6 @@ systemctl start kubelet
 
 # Make weave-net available
 mkdir /root/templates
-cp $directory/kubernetes-bundle/templates/* /root/templates
+cp $directory/templates/* /root/templates
 
 
