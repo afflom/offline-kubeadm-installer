@@ -17,7 +17,7 @@ EOF
 sysctl --system
 
 # Install packages
-yum install -y $directory/packages/*.rpm
+yum install -y $directory/packages/*.rpm --nogpgcheck
 
 ## Create /etc/docker directory.
 mkdir /etc/docker
